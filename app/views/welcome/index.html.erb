@@ -1,0 +1,95 @@
+<!--
+<h1>Hello, Rails!</h1>
+
+  <% @lines.each do |line| %>
+  <h1><%= line %></h1>
+  <% end %> 
+
+-->
+<%
+vars = request.query_parameters
+line =vars['lines']
+%>
+<h1><%=vars['lines']%></h1>
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript">
+    function changeDivContent() { 
+      alert('hello')
+      
+    };
+    function lineChange(ctl){
+      
+      
+      
+      alert(ctl.value);
+      imggal.innerHTML = ctl.value;
+    
+    };
+</script>
+<style>
+div.gallery {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 220px;
+}
+
+div.gallery:hover {
+  border: 1px solid #777;
+}
+
+div.gallery img {
+  width: 100%;
+  height: auto;
+}
+
+div.desc {
+  padding: 15px;
+  text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div id="imggal">
+<% 
+if line == ""
+  line = "Duration"
+end
+@shingles.each do |props|
+  if props["name"] == line
+%>    
+<div class="gallery">
+  <a target="_blank" href="<%= props["url"] %>">
+    <img src="<%= props["url"] %>" alt="Cinque Terre" width="600" height="400">
+  </a>
+  <div class="desc"><%= props["name"].to_s + " - " + props["color"].to_s %></div>
+</div>
+<%
+  end
+end
+%>
+</div>
+<!--
+<div class="gallery">
+  <a target="_blank" href="<%= @imgs[1] %>">
+    <img src="<%= @imgs[1] %>" alt="Forest" width="600" height="400">
+  </a>
+  <div class="desc">Add a description of the image here</div>
+</div>
+-->
+
+
+<!--<select name="lines" onChange="lineChange(this);">-->
+<form action="" method="get">
+<select name="lines" onChange="this.form.submit();">
+  <option value = "">Please choose a line:</option>
+<% @lines.each do |line| %>
+  <option value="<%= line %>" > <%= line %> </option>
+ <% end %> 
+</form>
+</select>
+</body>
+</html>

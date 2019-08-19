@@ -9,26 +9,33 @@
 <%
 vars = request.query_parameters
 line =vars['lines']
+if line.nil?
+  line = "Duration"
+end
 %>
-<h1><%=vars['lines']%></h1>
+<h1><%=line%></h1>
 <!DOCTYPE html>
 <html>
 <head>
 <script type="text/javascript">
-    function changeDivContent() { 
-      alert('hello')
+    function changeDivContent(ctl) { 
+      <!--(ctl.src)-->
+      largepic.innerHTML = '<img src="' + ctl.src + '" height="42" width="42">'
       
-    };
-    function lineChange(ctl){
-      
-      
-      
-      alert(ctl.value);
-      imggal.innerHTML = ctl.value;
-    
     };
 </script>
 <style>
+div.pic {
+  margin: 5px;
+  border: 1px solid #ccc;
+  float: left;
+  width: 100%;
+}
+div.pic img {
+  width: 40%;
+  height: auto;
+}
+
 div.gallery {
   margin: 5px;
   border: 1px solid #ccc;
@@ -53,18 +60,32 @@ div.desc {
 </head>
 <body>
 
+<form action="" method="get">
+<select name="lines" onChange="this.form.submit();">
+  <option value = "">Please choose a line</option>
+<% @lines.each do |line| %>
+  <option value="<%= line %>" > <%= line %> </option>
+ <% end %> 
+</select>
+</form>
+
+<div id="largepic" class="pic">
+  <img src="<%=  %>" height="42" width="42">
+</div>
+
 <div id="imggal">
-<% 
-if line == ""
-  line = "Duration"
-end
+ 
+
+<%
 @shingles.each do |props|
   if props["name"] == line
-%>    
+%>
+
+
 <div class="gallery">
-  <a target="_blank" href="<%= props["url"] %>">
-    <img src="<%= props["url"] %>" alt="Cinque Terre" width="600" height="400">
-  </a>
+  <!--<a target="#largepic" href="<%= props["url"] %>">-->
+    <img src="<%= props["url"] %>" alt="Cinque Terre" width="600" height="400" onclick="changeDivContent(this)">
+  <!--</a>-->
   <div class="desc"><%= props["name"].to_s + " - " + props["color"].to_s %></div>
 </div>
 <%
@@ -72,24 +93,8 @@ end
 end
 %>
 </div>
-<!--
-<div class="gallery">
-  <a target="_blank" href="<%= @imgs[1] %>">
-    <img src="<%= @imgs[1] %>" alt="Forest" width="600" height="400">
-  </a>
-  <div class="desc">Add a description of the image here</div>
-</div>
--->
 
 
 <!--<select name="lines" onChange="lineChange(this);">-->
-<form action="" method="get">
-<select name="lines" onChange="this.form.submit();">
-  <option value = "">Please choose a line:</option>
-<% @lines.each do |line| %>
-  <option value="<%= line %>" > <%= line %> </option>
- <% end %> 
-</form>
-</select>
 </body>
 </html>

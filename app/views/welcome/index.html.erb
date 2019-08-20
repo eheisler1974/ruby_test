@@ -5,14 +5,7 @@ TODO - Cleanup layout - everything is here but its UGLY
 
 -->
 
-<%
-vars = request.query_parameters
-line =vars['lines']
-if line.nil?
-  line = "Duration"
-end
-%>
-<h1><%=line%></h1>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -28,30 +21,21 @@ end
       showColorName(ctl.id)  
     }
     
-    function showNextPic(){
-      var pic = document.getElementById("largepic")
-      var imgs = pic.getElementsByTagName("img");
-      
-      newID = parseInt(imgs[0].id) + 1
-      
-      var gal = document.getElementById("imggal")
-      var thumbs = gal.getElementsByTagName("img")
-    
-      largepic.innerHTML = '<img id="' + newID +'" src="' + thumbs[newID].src + '" height="32" width="32">'
-      showColorName(newID)
-    }
-    
-    function showPrevPic(){
-      var pic = document.getElementById("largepic")
-      var imgs = pic.getElementsByTagName("img");
-      
-      newID = parseInt(imgs[0].id) - 1
+    function showPic(addend){
+     
+      if (addend != 0)
+      {
+        var imgs = document.getElementById("largepic").getElementsByTagName("img");
+        newID = parseInt(imgs[0].id) + addend
+      }
+      else
+      {
+        newID = addend
+      }
       
       if (newID >= 0)
       {
-        var gal = document.getElementById("imggal")
-        var thumbs = gal.getElementsByTagName("img")
-    
+        var thumbs = document.getElementById("imggal").getElementsByTagName("img")
         largepic.innerHTML = '<img id="' + newID +'" src="' + thumbs[newID].src + '" height="32" width="32">'
         showColorName(newID)
       }
@@ -75,7 +59,8 @@ end
   div.navdesc{
     padding: 15px;
     vertical-align: bottom;
-    text-align: center;
+    font-size: 1.875em;
+    text-align: left;
   }
   
   div.pic {
@@ -112,7 +97,7 @@ end
   }
 </style>
 </head>
-<body>
+<body onload="showPic(0)">
 
 <form action="" method="get">
   <select name="lines" onChange="this.form.submit();">
@@ -123,17 +108,29 @@ end
   </select>
 </form>
 
+<div id="shinglelines">
+  <%
+  vars = request.query_parameters
+  line =vars['lines']
+  if line.nil?
+    line = "Duration"
+  end
+  %>
+  <h1><%=line%></h1>
+</div>
+
 <div id = "nav" class="navigation">
   <div id = "prev" class="navbtn">
-      <a onclick="showPrevPic()">Previous</a>
+      <a onclick="showPic(-1)">Previous</a>
   </div>
 
   <div id="largepic" class="pic">
     <img src="<%=  %>" height="32" width="32">
+    
   </div>
 
   <div id = "next" class="navbtn">
-    <a onclick="showNextPic()">Next</a>
+    <a onclick="showPic(1)">Next</a>
   </div>
 
   <div id = "colordesc" class="navdesc">

@@ -1,11 +1,10 @@
 <!--
-<h1>Hello, Rails!</h1>
 
-  <% @lines.each do |line| %>
-  <h1><%= line %></h1>
-  <% end %> 
+TODO - Navigation buttons
+TODO - Cleanup layout - everything is here but its UGLY
 
 -->
+
 <%
 vars = request.query_parameters
 line =vars['lines']
@@ -18,83 +17,150 @@ end
 <html>
 <head>
 <script type="text/javascript">
+
+    function showColorName(id){
+      var cdesc = document.getElementsByClassName("desc")
+      colordesc.innerHTML = cdesc[id].innerHTML
+    }
+    
     function changeDivContent(ctl) { 
-      <!--(ctl.src)-->
-      largepic.innerHTML = '<img src="' + ctl.src + '" height="42" width="42">'
+      largepic.innerHTML = '<img id="' + ctl.id +'" src="' + ctl.src + '" height="32" width="32">'
+      showColorName(ctl.id)  
+    }
+    
+    function showNextPic(){
+      var pic = document.getElementById("largepic")
+      var imgs = pic.getElementsByTagName("img");
       
-    };
+      newID = parseInt(imgs[0].id) + 1
+      
+      var gal = document.getElementById("imggal")
+      var thumbs = gal.getElementsByTagName("img")
+    
+      largepic.innerHTML = '<img id="' + newID +'" src="' + thumbs[newID].src + '" height="32" width="32">'
+      showColorName(newID)
+    }
+    
+    function showPrevPic(){
+      var pic = document.getElementById("largepic")
+      var imgs = pic.getElementsByTagName("img");
+      
+      newID = parseInt(imgs[0].id) - 1
+      
+      if (newID >= 0)
+      {
+        var gal = document.getElementById("imggal")
+        var thumbs = gal.getElementsByTagName("img")
+    
+        largepic.innerHTML = '<img id="' + newID +'" src="' + thumbs[newID].src + '" height="32" width="32">'
+        showColorName(newID)
+      }
+    }
+    
 </script>
 <style>
-div.pic {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 100%;
-}
-div.pic img {
-  width: 40%;
-  height: auto;
-}
+  div.navigation{
+    margin: 5px;
+    float: left;
+    width: 100%;
+  }
 
-div.gallery {
-  margin: 5px;
-  border: 1px solid #ccc;
-  float: left;
-  width: 220px;
-}
+  div.navbtn{
+    margin: 5px;
+    float: left;
+    width: 5%;
+    text-decoration: underline;
+  }
 
-div.gallery:hover {
-  border: 1px solid #777;
-}
+  div.navdesc{
+    padding: 15px;
+    vertical-align: bottom;
+    text-align: center;
+  }
+  
+  div.pic {
+    margin: 5px;
+    float: left;
+    width: 20%;
+  }
+  
+  div.pic img {
+    width: 80%;
+    height: auto;
+  }
 
-div.gallery img {
-  width: 100%;
-  height: auto;
-}
+  div.gallery {
+    margin: 5px;
+    border: 1px solid #ccc;
+    float: left;
+    width: 180px;
+  }
 
-div.desc {
-  padding: 15px;
-  text-align: center;
-}
+  div.gallery:hover {
+    border: 1px solid #777;
+  }
+
+  div.gallery img {
+    width: 100%;
+    height: auto;
+  }
+
+  div.desc {
+    padding: 15px;
+    font-size: 0.875em;
+    text-align: center;
+  }
 </style>
 </head>
 <body>
 
 <form action="" method="get">
-<select name="lines" onChange="this.form.submit();">
-  <option value = "">Please choose a line</option>
-<% @lines.each do |line| %>
-  <option value="<%= line %>" > <%= line %> </option>
- <% end %> 
-</select>
+  <select name="lines" onChange="this.form.submit();">
+    <option value = "">Please choose a line</option>
+    <% @lines.each do |line| %>
+    <option value="<%= line %>" > <%= line %> </option>
+    <% end %> 
+  </select>
 </form>
 
-<div id="largepic" class="pic">
-  <img src="<%=  %>" height="42" width="42">
+<div id = "nav" class="navigation">
+  <div id = "prev" class="navbtn">
+      <a onclick="showPrevPic()">Previous</a>
+  </div>
+
+  <div id="largepic" class="pic">
+    <img src="<%=  %>" height="32" width="32">
+  </div>
+
+  <div id = "next" class="navbtn">
+    <a onclick="showNextPic()">Next</a>
+  </div>
+
+  <div id = "colordesc" class="navdesc">
+    
+  </div>
+
 </div>
 
 <div id="imggal">
- 
 
-<%
-@shingles.each do |props|
-  if props["name"] == line
-%>
+  <%
+  id=0
+  @shingles.each do |props|
+    if props["name"] == line
+  %>
 
+  <div class="gallery" >
+    <img id="<%= id %>" src="<%= props["url"] %>" alt="" width="600" height="400" onclick="changeDivContent(this)">
+    <div id="<%= id %>" class="desc"><%= props["name"].to_s + " - " + props["color"].to_s %></div>
+  </div>
 
-<div class="gallery">
-  <!--<a target="#largepic" href="<%= props["url"] %>">-->
-    <img src="<%= props["url"] %>" alt="Cinque Terre" width="600" height="400" onclick="changeDivContent(this)">
-  <!--</a>-->
-  <div class="desc"><%= props["name"].to_s + " - " + props["color"].to_s %></div>
-</div>
-<%
+  <%
+      id = id + 1
+    end
   end
-end
-%>
+  %>
 </div>
 
-
-<!--<select name="lines" onChange="lineChange(this);">-->
 </body>
 </html>
